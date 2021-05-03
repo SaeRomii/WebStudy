@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test028.html</title>
+
+<script type="text/javascript">
+
+	function createLotto()
+	{
+		/*
+		//테스트
+		//alert("함수호출");
+		
+		var lotto = new Array(6);
+		var count = parseInt(document.getElementById("txtCount").value);
+		var turn = 0;
+		var over = true;
+		var msg = "";
+		
+		while (lotto.length<6)
+		{
+			var number = 0;
+			number = parseInt(Math.random()*45)+1;
+			
+			for (var i = 0; i <turn; i++)
+			{
+				if (lotto[i]==number)
+				{
+					over = false;
+					break;
+				}
+			}
+			if (overl)
+			{
+				lotto[lotto.length] += number;
+				turn++;
+			}
+			over = true;
+			
+			for (i in lotto)
+			{
+				document.write(lotto[i], "&nbsp;&nbsp;&nbsp;");
+			}
+			document.write("")
+		}
+		*/
+		
+		var count = parseInt(document.getElementById("txtCount").value);
+		document.getElementById("lottoResult").value = "";
+		
+		for (var i = 0; i <count; i++)
+		{
+			document.getElementById("lottoResult").value += goLotto() + "\n";
+		}
+	}
+	
+	function goLotto()
+	{	
+		// 방 6개 배열(6개 숫자)
+		var arrLotto = new Array(6);
+		
+		// 방 45개 배열
+		var arr = new Array(45);
+		
+		for (var i = 1; i <arr.length; i++)
+		{
+			arr[i-1]=i;
+		}
+		
+		// 테스트
+		alert(arr[9]);
+	}
+
+</script>
+
+</head>
+<body>
+
+<!-- 
+	로또 번호(1~45)를 중복되지 않은 정수 6개를 생성하여
+	출력해주는 페이지를 구현한다.
+	HTML, CSS, Javascript 를 활용한다.
+	난수 발생 함수를 활용한다.
+	번호순으로(오름차순) 정렬하여 출력할 수 있도록 한다.
+	주문한 장 수 만큼 출력할 수 있도록 한다.
+	정렬포함, 중복되면 안됨
+	
+	페이지 레이아웃
+	---------------------------------------------------------
+	로또 [        ] 장		< 주문하기 >
+	
+	결과
+	----------------------------
+	
+	----------------------------
+	
+	
+	---------------------------------------------------------
+
+-->
+
+
+<div>
+	<h1>자바스크립트 난수 실습</h1>
+	<hr>
+</div>
+
+<div>
+	로또
+	<input type="text" id="txtCount">장
+	<button type="button" onclick="createLotto()">주문하기</button><br><br>
+	결과<br>
+	<textarea rows="10" cols="20" id="lottoResult"></textarea>
+</div>
+
+
+</body>
+</html>
