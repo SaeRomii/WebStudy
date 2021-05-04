@@ -46,30 +46,76 @@
 		}
 		*/
 		
+		// 테스트
+		//alert("함수호출");
+		
 		var count = parseInt(document.getElementById("txtCount").value);
-		document.getElementById("lottoResult").value = "";
+		
+		document.getElementById("resultArea").value = "";		// 이전 결과 지우고 새로 결과 나오게 하는 부분
 		
 		for (var i = 0; i <count; i++)
 		{
-			document.getElementById("lottoResult").value += goLotto() + "\n";
+			document.getElementById("resultArea").value
+				//+= 로또 한 게임 + "\n";
+				  += runlottoSingle() + "\n";
 		}
+		
 	}
 	
-	function goLotto()
-	{	
-		// 방 6개 배열(6개 숫자)
-		var arrLotto = new Array(6);
+	
+	// 로또 한 게임
+	function runlottoSingle()
+	{
+		// 방 6개로 구성된 배열 생성
+		var lottoArray = new Array(6);
 		
-		// 방 45개 배열
+		// 로또 추첨 공 45개 생성
 		var arr = new Array(45);
 		
+		// 45개 추첨 공에 1 ~ 45 까지의 로또 번호 적어놓기
 		for (var i = 1; i <arr.length; i++)
+			arr[i-1] = i;
+		
+		// 테스트 (arr의 9번방)
+		//alert(arr[9]);
+		//--==>> 10
+		
+		// 뒤섞기(공 섞는 작업)
+		for (var i = 0; i <arr.length; i++)
 		{
-			arr[i-1]=i;
+			var j = parseInt(Math.random()*45);		//0~44까지 정수 형태의 난수 한 개 발생
+			
+			//발생시킨 난수끼리 자리바꾸기
+			var temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
 		}
 		
 		// 테스트
-		alert(arr[9]);
+		//return arr;
+		
+		//섞은거 배열에 옮겨담기
+		for (var i = 0; i <lottoArray.length; i++)
+			lottoArray[i] = arr[i];
+		
+		
+		// 정렬(오름차순)
+		// 크기 비교를 해야 정렬가능(문자열 비교해서 크기비교하는 함수 sort)
+		// 왼쪽에 있는거랑 오른쪽에 있는거랑 비교해서 양수 음수 0 나오게 
+		// lottoArray.sort(크기비교가능);
+		// lottoArray.sort(익명의함수);  → 기능에 대한 부분만 처리
+		// 두개의 파라미터로 비교를 하게 되는데(아래에서는 left랑 right로 설정해줌)
+		// 숫자로 변경해서 뺄셈으로 양수인지 음수인지 0인지에 알 수 있음
+		lottoArray.sort(function(left, right)
+		{
+			// left에서 right 빼서 음수 줄건지 양수줄건지..
+			return Number(left) - Number(right);
+		});
+		
+		
+		// 구성된 배열 반환
+		return lottoArray;
+			
 	}
 
 </script>
@@ -102,16 +148,29 @@
 
 
 <div>
-	<h1>자바스크립트 난수 실습</h1>
+	<h1>자바스크립트 활용</h1>
 	<hr>
 </div>
 
-<div>
+<!-- <div>
 	로또
 	<input type="text" id="txtCount">장
 	<button type="button" onclick="createLotto()">주문하기</button><br><br>
 	결과<br>
 	<textarea rows="10" cols="20" id="lottoResult"></textarea>
+</div> -->
+<!-- 버튼 타입 설정 안해주면 submit 됨 -->
+
+<div>
+	<form>
+		로또
+		<input type="text" id="txtCount" style="width: 20px;">장
+		<button type="button" onclick="createLotto()">주문하기</button>
+		<br><br>
+		
+		결과<br>
+		<textarea rows="" cols="" id="resultArea" style="width: 240px; height: 140px;"></textarea>
+	</form>
 </div>
 
 
