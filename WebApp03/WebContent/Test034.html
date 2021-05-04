@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test034.html</title>
+
+<style type="text/css">
+	a {font-size: small;}
+</style>
+
+<script type="text/javascript">
+	
+	function myAddr(addr)
+	{
+		//alert("함수 호출");
+		
+		// window.opener는 Test033 (Test033에서 Test034를 열었기 때문에 Test034는 자식 느낌 Test033은 부모 느낌(오픈시긴객체))
+		// window.opener.document는 Test034
+		// Test033에 있는 addr1(기본주소 id) 가져와서 addr에 넘기겠다.
+		window.opener.document.getElementById("addr1").value = addr;
+		
+		// IE용
+		//window.opener.document.getElementById("txt1").innerText = addr;
+		
+		// CR, FF용
+		window.opener.document.getElementById("txt1").innerHTML = addr;
+		
+		// window = 열어둔 자기 창
+		window.close();
+	}
+
+</script>
+
+</head>
+<body>
+
+<div>
+	<form>
+		주소 검색
+		<input>
+		<input type="button" value="검색"><br><br>
+		<!-- <a href="http://www.naver.com">서울 마포구 서교로 1가 (1~110번지)</a><br> -->
+		<!-- myAddr에 매개변수 문자열 넣어줌 -->
+		<a href="javascript:myAddr('서울 마포구 서교로 1가')">서울 마포구 서교로 1가 (1~110번지)</a><br>	<!-- 자바스크립트 함수 호출 -->
+		<a href="javascript:myAddr('서울 마포구 서교로 2가')">서울 마포구 서교로 2가 (111~123번지)</a><br>
+		<a href="javascript:myAddr('서울 마포구 서교로 3가')">서울 마포구 서교로 3가 (124~136번지)</a><br>
+		<a href="javascript:myAddr('서울 마포구 서교로 4가')">서울 마포구 서교로 4가 (137~152번지)</a><br>
+		<a href="javascript:myAddr('서울 마포구 서교로 5가')">서울 마포구 서교로 5가 (153~166번지)</a><br>
+		<a href="javascript:myAddr('서울 마포구 서교로 6가')">서울 마포구 서교로 6가 (167~205번지)</a><br>
+		
+	</form>
+</div>
+
+</body>
+</html>
