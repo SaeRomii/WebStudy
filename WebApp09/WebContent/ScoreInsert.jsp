@@ -3,58 +3,54 @@
 <%@page import="java.sql.Connection"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%
-	//ScoreList.jsp
+	//리다이렉트 servlet으로 업무 넘겨줌
 	
-	// 데이터 수신
+	// ScoreInsert.jsp
+	
+	// 한글 인코딩 처리
 	request.setCharacterEncoding("UTF-8");
-
-	String uName = request.getParameter("name");
-	String korStr = request.getParameter("kor");
-	String engStr = request.getParameter("eng");
-	String matStr = request.getParameter("mat");
 	
-	int kor,eng,mat;
-	kor=eng=mat=0;
-	int tot=0;
-	double avg=0;
+	// 이전 페이지(ScoreList.jsp)로 부터 데이터 수신(이름, 국어점수, 영어점수, 수학점수)
+	String uName = request.getParameter("userName");
+	String uKor = request.getParameter("scoreKor");
+	String uEng = request.getParameter("scoreEng");
+	String uMat = request.getParameter("scoreMat");
 	
 	try
 	{
-		kor = Integer.parseInt(korStr);
-		eng = Integer.parseInt(engStr);
-		mat = Integer.parseInt(matStr);
+		// 데이터베이스 연결
+		Connection conn = DBConn.getConnection();
 		
-		tot = kor + eng + mat;
-		avg = tot / 3.0;
+		// 쿼리문 준비 → insert 쿼리문
+		// statement 사용할거라서 오라클에서는 숫자 형태로 저장되고 여기 불러져 올 때는 string으로
+		String sql = String.format("INSERT INTO TBL_SCORE(SID, NAME, KOR, ENG, MAT) VALUES(SCORESEQ.NEXTVAL, '%s', %s, %s, %s)", uName, uKor, uEng, uMat);
+		
+		// 작업객체 구성 및 쿼리문 실행 → executeUpdate → 적용된 행의 개수 반환
+		// 												    --------------------- 요청 페이지 분기
+		Statement stmt = conn.createStatement();
+		stmt.executeUpdate(sql);
+		
+		// 작업객체 리소스 반납
+		stmt.close();
+		
+		
+		// 요청 페이지 분기 가능
+
 	}
 	catch(Exception e)
 	{
+		// 서버측 콘솔에서 확인
 		System.out.println(e.toString());
 	}
-	
-	// 데이터베이스 연결
-	Connection conn = DBConn.getConnection();
-	
-	// 쿼리문 준비 (insert)
-	String sql = String.format("INSERT INTO TBL_SCORE(SID, NAME, KOR, ENG, MAT) VALUES(SCORESEQ.NEXTVAL, '%s', %d, %d, %d)", uName, kor, eng, mat);
-	
-	// DB 액션 처리 → 작업 객체 필요
-	Statement stmt = conn.createStatement();
-	int result = 0;
-	result = stmt.executeUpdate(sql);
-	
-	stmt.close();
-	DBConn.close();
-	
-	if(result < 1)
+	finally
 	{
-		// 에러 페이지로 이동
-		response.sendRedirect("Err002.jsp");
-	}
-	else 
-	{
-		// Test002.jsp 페이지 요청		
-		response.sendRedirect("ScoreList.jsp");
+		// 데이터베이스 연결 종료
+		DBConn.close();
 	}
 	
+	// 클라이언트가 다시 요청해야 할 URL 전달 → sendRedirect() 메소드 활용
+	// → ScoreList.jsp
+	response.sendRedirect("ScoreList.jsp");	
+	
+
 %>

@@ -1,37 +1,44 @@
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
-<%@page import="java.sql.Connection"%>
 <%@page import="com.util.DBConn"%>
+<%@page import="java.sql.Connection"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%
-	// 결과 값 변수
 	String str = "";
-	
+
 	// 데이터베이스 연결
 	Connection conn = DBConn.getConnection();
 	
-	// 쿼리문 준비 (select)
-	String sql = "SELECT SID, NAME, KOR, ENG, MAT, (KOR+ENG+MAT) AS TOT, ROUND(((KOR+ENG+MAT)/3.0),1) AS AVG FROM TBL_SCORE";
+	// 쿼리문 준비 → 리스트를 조회하기 위한 SELECT 쿼리문
+	String sql = "SELECT SID, NAME, KOR, ENG, MAT, (KOR+ENG+MAT) AS TOT, ROUND(((KOR+ENG+MAT)/3.0),1) AS AVG FROM TBL_SCORE ORDER BY SID ASC";
 	
-	// 작업 객체 생성 및 준비된 쿼리문 수행
+	// 작업객체 구성 및 쿼리문 실행
 	Statement stmt = conn.createStatement();
 	ResultSet rs = stmt.executeQuery(sql);
 	
-	// 결과 ResultSet 에 대한 처리 → 반복문 구성
-	str += "<table><tr><th id='numTitle'>번호</th><th id='nameTitle'>이름</th><th id='korTitle'>국어점수</th><th id='engTitle'>영어점수</th>"
-			+ "<th id='matTitle'>수학점수</th><th id='totTitle'>총점</th><th id='avgTitle'>평균</th></tr>";
+	// 타이틀 구성
+	str += "<table class='table'>";
+	str += "<tr>";
+	str += "<th>번호</th><th>이름</th>";
+	str += "<th>국어점수</th><th>영어점수</th><th>수학점수</th>";
+	str += "<th>총점</th><th>평균</th>";
+	str += "</tr>";
+	
+	// ResultSet 에 대한 처리 → 반복문 구성
 	while(rs.next())
 	{
 		str += "<tr>";
 		str += "<td>" + rs.getString("SID") + "</td>";
 		str += "<td>" + rs.getString("NAME") + "</td>";
-		str += "<td>" + rs.getString("KOR") + "</td>";
-		str += "<td>" + rs.getString("ENG") + "</td>";
-		str += "<td>" + rs.getString("MAT") + "</td>";
-		str += "<td>" + rs.getString("TOT") + "</td>";
-		str += "<td>" + rs.getString("AVG") + "</td>";
+		str += "<td class='txtNum'>" + rs.getString("KOR") + "</td>";
+		str += "<td class='txtNum'>" + rs.getString("ENG") + "</td>";
+		str += "<td class='txtNum'>" + rs.getString("MAT") + "</td>";
+		str += "<td class='txtNum'>" + rs.getString("TOT") + "</td>";
+		str += "<td class='txtNum'>" + String.format("%.1f", rs.getDouble("AVG")) + "</td>";
+		
 		str += "</tr>";
 	}
+	
 	str += "</table>";
 	
 	rs.close();
@@ -46,69 +53,63 @@
 <meta charset="UTF-8">
 <title>ScoreList.jsp</title>
 <link rel="stylesheet" type="text/css" href="css/main.css">
-
 <style type="text/css">
-	input { width: 200px; }
-	button { width: 200px; height: 50px; font-weight: bold; }
-	.errMsg { font-size: small; color:red; display: none;}
-	th { background-color: gray; color: white; }
-	
-	#numTitle { width: 50px; }
-	#nameTitle { width: 100px; }
-	#telTitle { width: 160px; }
+	.errMsg { color: red; font-size: small; display: none; }
+	.txtNum { text-align: center; }
 </style>
 
 <script type="text/javascript">
 
-	function formCheck()
+	function formCheck() 
 	{
-		var uName = document.getElementById("name");
-		var nMsg = document.getElementById("nameMsg");
-		var nKor = document.getElementById("korMsg");
-		var nEng = document.getElementById("engMsg");
-		var nMat = document.getElementById("matMsg");
-		var korStr = document.getElementById("kor");
-		var engStr = document.getElementById("eng");
-		var matStr = document.getElementById("mat");
-		var kor = Number(korStr.value);
-		var eng = Number(engStr.value);
-		var mat = Number(matStr.value);
+		// 테스트
+		//alert("ok");
 		
-		nMsg.style.display = "none";
-		nKor.style.display = "none";
-		nEng.style.display = "none";
-		nMat.style.display = "none";
+		var uName = document.getElementById("userName");
+		var uKor = document.getElementById("scoreKor");
+		var uEng = document.getElementById("scoreEng");
+		var uMat = document.getElementById("scoreMat");
+		
+		var nameMsg = document.getElementById("nameMsg");
+		var korMsg = document.getElementById("korMsg");
+		var engMsg = document.getElementById("engMsg");
+		var matMsg = document.getElementById("matMsg");
+		
+		nameMsg.style.display = "none";
+		korMsg.style.display = "none";
+		engMsg.style.display = "none";
+		matMsg.style.display = "none";
 		
 		if(uName.value == "")
 		{
-			nMsg.style.display = "inline";
+			nameMsg.style.display = "inline";
 			uName.focus();
 			return false;
 		}
 		
-		if (korStr.value == "" || isNaN(korStr.value) || kor<0 || kor>100)
+		if(uKor.value == "" || isNaN(uKor.value) || Number(uKor.value)<0 || Number(uKor.value)>100)
 		{
-			nKor.style.display = "inline";
-			korStr.focus();
+			korMsg.style.display = "inline";
+			uKor.focus();
 			return false;
 		}
 		
-		if (engStr.value == "" || isNaN(engStr.value) || eng<0 || eng>100)
+		if(uEng.value == "" || isNaN(uEng.value) || Number(uEng.value)<0 || Number(uEng.value)>100)
 		{
-			nEng.style.display = "inline";
-			engStr.focus();
+			engMsg.style.display = "inline";
+			uEng.focus();
 			return false;
 		}
 		
-		if (matStr.value == "" || isNaN(matStr.value) || mat<0 || mat>100)
+		if(uMat.value == "" || isNaN(uMat.value) || Number(uMat.value)<0 || Number(uMat.value)>100)
 		{
-			nMat.style.display = "inline";
-			matStr.focus();
+			matMsg.style.display = "inline";
+			uMat.focus();
 			return false;
-		} 
+		}
 		
 		return true;
-		
+			
 		
 	}
 
@@ -123,46 +124,48 @@
 </div>
 
 <div>
+	<p>성적 정보 리스트</p>
 	<form action="ScoreInsert.jsp" method="post" onsubmit="return formCheck()">
-		<table>
+		<table class="table">
 			<tr>
-				<th>이름(*)</th>
+				<th style="width: 80px;">이름(*)</th>
 				<td>
-					<input type="text" id="name" name="name">
+					<input type="text" id="userName" name="userName">
 					<span class="errMsg" id="nameMsg">이름을 입력해야 합니다.</span>
 				</td>
 			</tr>
 			<tr>
 				<th>국어점수</th>
 				<td>
-					<input type="text" id="kor" name="kor">
-					<span class="errMsg" id="korMsg">0 ~ 100 사이의 점수를 입력하세요.</span>
+					<input type="text" id="scoreKor" name="scoreKor">
+					<span class="errMsg" id="korMsg">0 ~ 100 사이의 정수를 입력해야 합니다.</span>
 				</td>
 			</tr>
 			<tr>
 				<th>영어점수</th>
 				<td>
-					<input type="text" id="eng" name="eng">
-					<span class="errMsg" id="engMsg">0 ~ 100 사이의 점수를 입력하세요.</span>
+					<input type="text" id="scoreEng" name="scoreEng">
+					<span class="errMsg" id="engMsg">0 ~ 100 사이의 정수를 입력해야 합니다.</span>
 				</td>
 			</tr>
 			<tr>
 				<th>수학점수</th>
 				<td>
-					<input type="text" id="mat" name="mat">
-					<span class="errMsg" id="matMsg">0 ~ 100 사이의 점수를 입력하세요.</span>
+					<input type="text" id="scoreMat" name="scoreMat">
+					<span class="errMsg" id="matMsg">0 ~ 100 사이의 정수를 입력해야 합니다.</span>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">
-					<button type="submit" id="btnAdd" class="btn">성적 추가</button>
+				<td colspan="2" style="text-align: left;">
+					<input type="submit" value="성적 추가" class="btn"
+					style="width: 280px; height: 50px; font-weight: bold;">
 				</td>
 			</tr>
 		</table>
 	</form>
-	<br><br>
 	
-	<div>
+	<div class="div01">
+		<!-- 리스트 구성 -->
 		<%=str %>
 	</div>
 </div>
