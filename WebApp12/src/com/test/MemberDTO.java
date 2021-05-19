@@ -13,6 +13,7 @@ public class MemberDTO
 	// 주요 속성 구성(프로퍼티 구성)
 	private String sid, name, tel;		//--번호, 이름, 전화번호
 
+
 	// getter / setter 구성
 	public String getSid()
 	{
@@ -43,4 +44,6 @@ public class MemberDTO
 	{
 		this.tel = tel;
 	}
+	
+	
 }
