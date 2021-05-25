@@ -155,12 +155,16 @@
 	
 	<div id="bbsArticle_footer">
 		<div id="leftFooter">
-			<input type="button" value="수정" class="btn2">
-			<input type="button" value="삭제" class="btn2">
+			<input type="button" value="수정" class="btn2"
+			onclick="javascript:location.href='<%=cp%>/Updated.jsp?num=<%=dto.getNum()%>&pageNum=<%=pageNum%> '">
+			<input type="button" value="삭제" class="btn2"
+			onclick="javascript:location.href='<%=cp%>/Delete.jsp?num=<%=dto.getNum()%>&pageNum=<%=pageNum%> '">
 		</div><!-- #leftFooter -->
 		
+		<!-- 검색 기능 적용 시 변경 예정 -->
 		<div id="rightFooter">
-			<input type="button" value="리스트" class="btn2">
+			<input type="button" value="리스트" class="btn2"
+			onclick="javascript:location.href='<%=cp%>/List.jsp?pageNum=<%=pageNum%> '">
 		</div><!-- #rightFooter -->
 	</div><!-- .bbsArticle_footer -->
 	

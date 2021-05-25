@@ -86,6 +86,8 @@ public class BoardDAO
 	}//end insertData
 	
 	// DB 레코드의 개수를 가져오는 메소드 정의
+	// 검색 기능 작업하며 수정
+	/*
 	public int getDataCount()
 	{
 		int result = 0;
@@ -111,8 +113,45 @@ public class BoardDAO
 		
 		return result;
 	}// end getDataCount
+	*/
+	
+	public int getDataCount(String searchKey, String searchValue)		//searchKey랑 searchValue를 받아서 카운팅
+	{
+		int result = 0;
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "";
+		
+		try
+		{
+			// %제목% , %작성자%, %내용% 처리
+			searchValue = "%" + searchValue + "%";
+			
+			sql = "SELECT COUNT(*) AS COUNT FROM TBL_BOARD";
+			sql += " WHERE " + searchKey + " LIKE ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, searchValue);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next())
+				result = rs.getInt(1);
+			rs.close();
+			pstmt.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.toString());
+		}
+		
+		return result;
+	}// end getDataCount
 	
 	// 특정 영역(시작번호 ~ 끝번호)의 게시물의 목록을 읽어오는 메소드 정의 
+	// 검색 기능 작업하며 수정
+	/*
 	public List<BoardDTO> getLists(int start, int end)
 	{
 		List<BoardDTO> result = new ArrayList<BoardDTO>();
@@ -132,6 +171,59 @@ public class BoardDAO
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, start);
 			pstmt.setInt(2, end);
+			
+			rs = pstmt.executeQuery();
+			while(rs.next())
+			{
+				BoardDTO dto = new BoardDTO();
+				dto.setNum(rs.getInt("NUM"));
+				dto.setName(rs.getString("NAME"));
+				dto.setSubject(rs.getString("SUBJECT"));
+				dto.setHitCount(rs.getInt("HITCOUNT"));
+				dto.setCreated(rs.getString("CREATED"));
+				
+				result.add(dto);
+			}
+			rs.close();
+			pstmt.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.toString());
+		}
+		return result;
+	}// end getLists
+	*/
+	
+	// 시작값 끝값 key, value(검색값) 받기
+	public List<BoardDTO> getLists(int start, int end, String searchKey, String searchValue)
+	{
+		//모든 DTO 넘기기
+		List<BoardDTO> result = new ArrayList<BoardDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "";
+		
+		try
+		{
+			// %제목% , %작성자%, %내용% 처리
+			searchValue = "%" + searchValue + "%";
+			
+			sql = "SELECT NUM, NAME, SUBJECT, HITCOUNT, CREATED "
+				+ " FROM"
+				+ " ( SELECT ROWNUM RNUM, DATA.*"
+				+ " FROM"
+				+ " ( SELECT NUM, NAME, SUBJECT, HITCOUNT"
+				+ ", TO_CHAR(CREATED,'YYYY-MM-DD') AS CREATED "
+				+ " FROM TBL_BOARD"
+				+ " WHERE " + searchKey + " LIKE ?"
+				+ " ORDER BY NUM DESC ) DATA ) "
+				+ " WHERE RNUM >= ? AND RNUM <= ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, searchValue);
+			pstmt.setInt(2, start);
+			pstmt.setInt(3, end);
 			
 			rs = pstmt.executeQuery();
 			while(rs.next())

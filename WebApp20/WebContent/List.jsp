@@ -1,3 +1,4 @@
+<%@page import="java.net.URLDecoder"%>
 <%@page import="com.test.BoardDTO"%>
 <%@page import="java.util.List"%>
 <%@page import="com.util.MyUtil"%>
@@ -22,13 +23,38 @@
 	// pageNum 기록 남아있으면 그걸 currentPage로
 	if(pageNum != null)
 		currentPage = Integer.parseInt(pageNum);
+	
+	// 검색기능 추가
+	// 검색 키와 검색 값 수신
+	String searchKey = request.getParameter("searchKey");
+	String searchValue = request.getParameter("searchValue");
+	
+	if(searchKey != null)	//-- 검색 기능을 통해 페이지가 요청되었을 경우
+	{
+		// 넘어온 값이 GET 방식이라면
+		// → GET 은 한글 문자열을 인코딩 해서 보내기 때문에 디코딩 처리
+		// 페이지 요청 방식이 GET방식이라면 ↓
+		if (request.getMethod().equalsIgnoreCase("GET"))
+		{
+			// 디코딩 처리
+			searchValue = URLDecoder.decode(searchValue, "UTF-8");
+		}
+	}
+	else					//-- 검색 기능이 아닌 기본적인 페이지 요청이 이루어졌을 경우
+	{
+		searchKey = "subject";
+		searchValue = "";
+	}
 
 	Connection conn = DBConn.getConnection();
 	BoardDAO dao = new BoardDAO(conn);
 	MyUtil myUtil = new MyUtil();
 	
+	
+	// 검색기능 추가(searchKey, searchValue)
 	// 전체 데이터 개수 구하기
-	int dataCount = dao.getDataCount();
+	//int dataCount = dao.getDataCount();
+	int dataCount = dao.getDataCount(searchKey, searchValue);
 	
 	// 전체 페이지를 기준으로 총 페이지 수 계산
 	int numPerPage = 10;			//-- 한 페이지에 표시할 데이터 개수
@@ -48,13 +74,26 @@
 	int start = (currentPage-1) * numPerPage + 1;
 	int end = currentPage * numPerPage;
 		
-	// 실제 리스트 가져오기
-	List<BoardDTO> lists = dao.getLists(start, end);
 	
+	// 검색기능 추가(searchKey, searchValue)
+	// 실제 리스트 가져오기
+	//List<BoardDTO> lists = dao.getLists(start, end);
+	List<BoardDTO> lists = dao.getLists(start, end, searchKey, searchValue);
+	
+	
+	// 검색기능 추가(searchKey, searchValue)
 	// 페이징 처리
 	String param = "";
 	
 	// 검색 기능 추가 → param 구성
+	// 검색값이 존재한다면
+	// searchValue값이 비어있지 않으면 ↓(검색값이 존재할 경우) param 구성
+	if(!searchValue.equals(""))
+	{
+		//param에 원래 없었는데 검색값 있으니까 searchKey랑 searchValue를 뒤에 붙여주겠다. 
+		param += "?searchKey=" + searchKey;
+		param += "?searchValue=" + searchValue;
+	}
 	
 	String listUrl = "List.jsp" + param;	//-- 상대경로 접근 방식(내 위치를 기준으로 경로 설정)
 	String pageIndexList = myUtil.pageIndexList(currentPage, totalPage, listUrl);
@@ -62,12 +101,16 @@
 	// 글 내용 보기 주소
 	String articleUrl = cp + "/Article.jsp";	//-- 절대경로 접근 방식(내가 어디에 있든 상관 없이 경로 지정)
 	
+	// param이 비어있는 상황
 	if(param.equals(""))
-	{
+	{	
+		//pageNum만 구성
 		articleUrl = articleUrl + "?pageNum=" + currentPage;
 	}
 	else
 	{
+		//param이 있으면 검색이 들어가는 상황
+		//여기 param에 94.95번째 줄 들어가는거임
 		articleUrl = articleUrl + param + "&pageNum=" + currentPage;
 	}
 	
@@ -83,6 +126,22 @@
 <title>List.jsp</title>
 <link rel="stylesheet" type="text/css" href="<%=cp %>/css/style.css">
 <link rel="stylesheet" type="text/css" href="<%=cp %>/css/list.css">
+
+<script type="text/javascript">
+
+	// 검색
+	function sendIt() 
+	{
+		var f = document.searchForm;
+		
+		// 검색 키워드에 대한 유효성 검사 코드 활용 가능
+		
+		f.action = "<%=cp%>/List.jsp";
+		f.submit();
+	}
+
+</script>
+
 </head>
 <body>
 
@@ -137,24 +196,24 @@
 				<dd class="hitCount">0</dd>
 			</dl> -->
 			
-			<%
-			for (BoardDTO dto : lists)
-			{
-			%>
-			<dl>
-				<dd class="num"><%=dto.getNum() %></dd>
-				<dd class="subject">
-					<a href="<%=articleUrl %>&num=<%=dto.getNum()%>">
-					<%=dto.getSubject() %>
-					</a>
-				</dd>
-				<dd class="name"><%=dto.getName() %></dd>
-				<dd class="created"><%=dto.getCreated() %></dd>
-				<dd class="hitCount"><%=dto.getHitCount() %></dd>
-			</dl>
-			<%
-			}
-			%>
+			 <%
+	         for (BoardDTO dto : lists)
+	         {
+	         %>
+	         <dl>
+	            <dd class="num"><%=dto.getNum() %></dd>
+	            <dd class="subject">
+	               <a href="<%=articleUrl %>&num=<%=dto.getNum()%>">
+	               <%=dto.getSubject() %>
+	               </a>
+	            </dd>
+	            <dd class="name"><%=dto.getName() %></dd>
+	            <dd class="created"><%=dto.getCreated() %></dd>
+	            <dd class="hitCount"><%=dto.getHitCount() %></dd>
+	         </dl>
+	         <%
+	         }
+	         %>
 		</div><!-- #lists -->
 		
 		<div id="footer">
