@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JQTest05.html</title>
+
+<style type="text/css">
+
+	.outer
+	{
+		width: 200px;
+		height: 200px;
+		background-color: orange;
+		padding: 50px;
+		margin: 10px;
+	}
+	
+	.inner
+	{
+		width: 100%;
+		height: 100%;
+		background-color: red;
+	}
+
+</style>
+
+
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function()
+	{
+		// 키보드 관련 이벤트
+		//$("textarea").keydown(function()
+		$("textarea").keyup(function()
+		{
+			//alert("확인");  키보드 누를 때마다 확인 팝업창 나옴
+			
+			// 텍스트박스에 입력된 값을 경고창을 통해 출력해서 확인
+			//alert( $(this).text() );  아무것도 안뜨는 팝업창 나옴 text를 통해서 값을 얻어올 수가 없음
+			//alert( $(this).html() );  아무것도 안뜨는 팝업창 나옴 html을 통해서 값 얻어올 수 없음
+			//alert( $(this).val() );   입력한 값 바로 뜨는게 아니라 다음 입력할 때 이전 입력 값 뜸 -> keydown으로 설정해서
+			
+			var len = $(this).val().length;		// 문자 길이 a 하나면 1 팝업창 뜸
+			
+			//alert(len);
+			
+			var remain = 10 - len;
+			
+			$("h1").html(remain);				// 글자 입력할 때마다 위에 10에서 숫자 줄어 줄어드는거 확인가능
+			
+			// remain 이 0이 되었을 경우
+			// 입력을 막아버리던지 경고창을 띄우던지
+			// 등의 추가적인 액션 처리를 할 수 있다.
+			if(remain<=3 && remain>=1)
+			{
+				$("h1").css("color", "orange");
+			}
+			else if(remain<=0)
+			{
+				$("h1").css("color", "red").html("더 이상 입력 불가");
+				$(this).attr("disabled", "disabled");			// 여기서 this는 textarea
+			}
+			else
+			{
+				$("h1").css("color", "black");
+			}
+		});
+		
+		$("button").click(function()
+		{
+			$("textarea").removeAttr("disabled");		// removeAttr라는 메소드 이용해서 없애버리겠다
+			$("textarea").focus();
+		});
+		
+		// 마우스 관련 이벤트
+		$(".outer").mouseover(function()
+		{
+			$("body").append($("<div>mouseover</div>").css("color", "blue"));
+			
+		}).mouseenter(function()
+		{
+			$("body").append($("<div>mouseenter</div>").css("color", "red"));
+		});
+		
+	});
+	
+</script>
+
+</head>
+<body>
+
+키보드 관련 이벤트<br>
+1. keydown / 2. keypress / 3. keyup 순으로 이벤트 발생<br>
+
+<div>
+	<p>남기고 싶은 말</p>
+	<h1>10</h1>
+	<button type="button">잠금해제</button><br>
+	<textarea rows="5" cols="70"></textarea>
+</div>
+<br><br>
+
+마우스 관련 이벤트<br>
+mouseenter / mouseleave / mousemove / mouseout / mouseover / mouseup 등<br>
+<br><br>
+
+<div class="outer"> 
+	<div class="inner"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JQTest03.html</title>
+<style type="text/css">
+	*
+	{
+		margin: 0px;
+		padding: 0px;
+	}
+	div
+	{
+		margin: 5px;
+		padding: 5px;
+		border: 3px solid black;
+		border-radius: 10px;
+	}
+
+</style>
+
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+
+	//제이쿼리함수 
+	//$();
+	//jquery();
+	$(document).ready(function()
+	{
+		$("div").click(function()
+		{
+			//alert("test");	범위 클릭하면 test 팝업창 뜸
+			//alert( $(this).html() );	//범위 클릭하면 특정(클릭한) 값 보여줌 <h1>도 다나옴
+			//alert( $(this).text() );    범위 클릭하면 특정(클릭한) 값 보여줌
+			
+			//alert( $("h1", this).text() );	~강의실 문자 보여줌
+			//alert( $("p", this).text() );		~수업중 문자 보여줌
+			
+			var h1 = $("h1", this).text();
+			var p = $("p", this).text();
+			
+			alert(h1 + " / " + p);
+			//--==>> ~강의실 / ~수업중 문자 보여줌
+		});
+	});
+	
+
+</script>
+
+</head>
+<body>
+
+<div>
+	<h1>A강의실</h1>
+	<p>JAVA 수업 중</p>
+</div>
+
+<div>
+	<h1>B강의실</h1>
+	<p>.NET 수업 중</p>
+</div>
+
+<div>
+	<h1>C강의실</h1>
+	<p>Oracle 수업 중</p>
+</div>
+
+<div>
+	<h1>D강의실</h1>
+	<p>ASP 수업 중</p>
+</div>
+
+<div>
+	<h1>E강의실</h1>
+	<p>JSP 수업 중</p>
+</div>
+
+<div>
+	<h1>F강의실</h1>
+	<p>JQUERY 수업 중</p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JQTest02.html</title>
+<style type="text/css">
+
+	.item
+	{
+		border: solid 2px red;
+		color: white;
+		background: black;
+	}
+
+</style>
+
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+
+	/* 
+	function test()
+	{
+		alert("함수호출");
+	} 
+	*/
+	
+	// 제이쿼리 함수
+	// 어떤 액션 취하지 않아도 도큐먼트가 메모리에 올라갈 때 제이쿼리 함수가 자동으로 호출됨
+	// jquery를 $로 치환해서 사용
+	//jquery(document).ready();
+	//$(document).ready();
+	//jquery();
+	//$();
+	
+	//$(document).ready(기능 삽입 / 동작 수행 / 행위 처리);
+	$(document).ready(function()
+	{
+		// 테스트
+		//alert("기능 확인");
+		
+		// ※ 우리가 또는 사용자가
+		//	  뭔가 건드리지 않아도
+		//	  (즉, 특별한 이벤트를 발생시키지 않아도)
+		//	  자동으로 처리될 수 있는 영역
+		
+		/* 
+		$("h1").click(function()
+		{
+			//alert("클릭확인"); → 이름 클릭하면 클릭확인 나옴
+			//alert( $(this).html() ); → 이름 클릭하면 클릭한 이름 나옴
+			//$(this).html("어떻게 될까요?"); → 이름 클릭하면 이름이 어떻게 될까요?로 바뀜
+			$(this).html( $(this).html() + "★" );
+		}); 
+		*/
+		
+		// 『on()』 : 이벤트 처리
+		/* 
+		$("h1").on("click", function()
+		{
+			//alert("클릭 이벤트 발생"); → 이름 클릭하면 클릭이벤트 발생 나옴
+			//alert( $(this).html() );  → 이름 클릭하면 클릭한 이름 나옴
+		}); 
+		*/
+		
+		// 『one()』 이벤트 처리
+		/* 
+		$("h1").one("click", function()
+		{
+			//alert("클릭"); → 이름 클릭하면 클릭이벤트 발생 나옴 on이랑 차이점 : one은 한 번만 나옴
+			//alert( $(this).html() ); → 이름 클릭하면 클릭한 이름 나옴 on이랑 차이점 : one은 한 번만 나옴
+			
+			$(this).html(function(index, html)  // index랑 html 넘겨주고
+			{
+				//alert(html);		//html출력  이름 클릭하면 이름 나옴
+				//alert(index);		//index출력 이름 클릭하면 0 나옴 0번째라서
+				//return html + "★";	// 이름 클릭하면 이름 뒤에 별 한개 붙음 
+			})
+		}) 
+		*/
+		
+		// on 뒤 괄호안에 함수 없이 {} 넣는거 JSON 표기법
+		/* 
+		$("h1").on(
+		{
+			// mouseenter : 어찌어찌하겠다. → 마우스 진입할 때 
+			// ex) 박정준에 마우스 가져다대면 item 클래스 생긴거임
+			// mouseleave : 저찌저찌하겠다. → 마우스 빠져나올 때
+			// ex) 박정준에 마우스 떼면 item 없어짐
+			mouseenter:function() { $(this).addClass("item") }
+			, mouseleave:function() { $(this).removeClass("item") }
+		}); 
+		*/
+		
+		// mouseenter, mouseleave
+		$("h1").hover(function()
+		{
+			//addClass에 item 추가되게
+			$(this).addClass("item");	//→ 마우스 가져가면 item 클래스 생겨서 색 나오고 마우스 떼고 다른이름 가져다대도
+										//   색 안없어지고 그대로임
+		}, function()
+		{
+			$(this).removeClass("item");	// 제거하면 색 있던거 제거됨
+		});
+		
+	});
+
+	
+</script>
+</head>
+<body>
+
+<!-- <h1>박정준</h1> -->
+<!-- <h1 onclick="함수()">박정준</h1> -->
+<!-- <h1 onclick="test()">박정준</h1> 이름 클릭했을 때 호출되게 만든 부분-->
+
+<h1>박정준</h1>
+<h1>심혜진</h1>
+<h1>선혜연</h1>
+
+</body>
+</html>
