@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JQTest07.html</title>
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function()
+	{
+		/* 
+		$("#allCheck").change(function()
+		{
+			// 테스트
+			//alert("change"); 모두 선택 누르면 팝업창뜨는거 확인가능(체크박스는 누르면 상태값 바뀜)
+		}); 
+		*/
+		
+		$("#allCheck").click(function()
+		{
+			// 테스트
+			//alert("click");  모두 선택 누르면 팝업창뜨는거 확인가능
+			
+			// 테스트
+			//alert( $(this).attr("checked") );    -->> undefined 체크 설정, 체크 해제했을 때
+			//checked를 attr 속성 불가능
+			
+			//alert( $(this).prop("checked") );    -->> 체크하면 true 해제하면 false 나옴
+			//alert( this.checked );               -->> 체크하면 true 해제하면 false 나옴
+			//alert( $(this).is(":checked") );     -->> is -> ~인지 아닌지로 true false 반환
+			
+			// 방법 1.
+			//$("div > input:checkbox").prop("checked", this.checked);
+			// div 안에 있는게 위에 있는 checkbox보다 크면 checked 속성 true(this.checked)이게 하라
+			// == 모두 선택 누르면 모두 선택되게
+			
+			// 방법 2.
+			// 『$(선택자).children()』
+			$("div").children().prop("checked", this.checked);	//여기서 this는 div 안에 checkbox
+			
+		});
+	});
+
+</script>
+
+</head>
+<body>
+
+<label><input type="checkbox" id="allCheck">모두 선택</label>
+<br><br>
+
+<div>
+	<input type="checkbox" id="check1">
+	<label for="check1">바나나</label><br>
+	<input type="checkbox" id="check2">
+	<label for="check2">딸기</label><br>
+	<input type="checkbox" id="check3">
+	<label for="check3">수박</label><br>
+	<input type="checkbox" id="check4">
+	<label for="check4">포도</label><br>
+	<input type="checkbox" id="check5">
+	<label for="check5">키위</label><br>
+</div>
+
+</body>
+</html>
